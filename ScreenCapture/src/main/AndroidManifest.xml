@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.igniva.videocapture"
+    >
+
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" tools:node="remove" />
+
+  <application
+      android:allowBackup="true"
+      android:icon="@drawable/ic_launcher"
+      android:label="@string/launcher_name"
+      android:name=".BaseApplication"
+      android:theme="@style/Theme.Telecine"
+      android:supportsRtl="true"
+      >
+    <activity android:name=".ui.activities.MainActivity">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+      </intent-filter>
+    </activity>
+
+    <activity android:name=".ui.activities.HistoryActivity"
+        />
+    <service android:name=".utils.services.TelecineService"/>
+
+    <receiver android:name=".utils.DeleteRecordingBroadcastReceiver"/>
+
+    <activity
+        android:name=".ui.activities.ShortcutConfigureActivity"
+        android:theme="@style/Theme.Telecine.Transparent"
+        android:excludeFromRecents="true"
+        android:taskAffinity=""
+        >
+      <intent-filter>
+        <action android:name="android.intent.action.CREATE_SHORTCUT" />
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".ui.activities.ShortcutLaunchActivity"
+        android:theme="@style/Theme.Telecine.Transparent"
+        android:excludeFromRecents="true"
+        android:taskAffinity=""
+        android:exported="true"
+        />
+
+    <service
+        android:icon="@drawable/ic_videocam_white_24dp"
+        android:label="@string/tile_name"
+        android:name=".utils.services.TelecineTileService"
+        android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+      <intent-filter>
+        <action android:name="android.service.quicksettings.action.QS_TILE"/>
+      </intent-filter>
+    </service>
+    <meta-data
+        android:name="io.fabric.ApiKey"
+        android:value="7f13cc184549fdf0b47c81233930bfdccce27582" />
+  </application>
+
+</manifest>
