@@ -13,13 +13,24 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >    <TextView
+            >
+            <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="time"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
             android:id="@+id/iv_time"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="time"
+                android:layout_marginLeft="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:id="@+id/iv_duration"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="110dp"
@@ -29,38 +40,49 @@
             android:paddingRight="5dp"
             android:id="@+id/iv_main">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_75"
                 android:src="@drawable/ic_launcher"
+                android:layout_marginTop="10dp"
                 android:layout_alignParentLeft="true"
-                android:id="@+id/iv_thumb"/>
+                android:id="@+id/iv_thumb"
+                android:layout_alignParentBottom="true" />
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_marginLeft="15dp"
+                android:layout_marginLeft="5dp"
                 android:gravity="center"
+                android:layout_marginTop="10dp"
 
                 android:layout_toRightOf="@+id/iv_thumb">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_gravity="center"
+                    android:layout_gravity="bottom"
+                    android:gravity="left"
                     android:id="@+id/edit_layout">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name"
                         android:layout_alignParentTop="true"
-                        android:id="@+id/iv_name"/>
+                        android:id="@+id/iv_name"
+                        android:layout_toLeftOf="@+id/iv_edit_name"
+
+
+                        />
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
+                        android:layout_gravity="bottom"
                         android:id="@+id/iv_edit_name"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
                         android:src="@android:drawable/ic_menu_edit"/>
-                </LinearLayout>
+                </RelativeLayout>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -86,11 +108,11 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/iv_rightbar"
-                android:layout_alignParentRight="true">
+               >
 
 
                 <TextView
@@ -100,6 +122,7 @@
                     android:textColor="@color/red"
                     android:textSize="@dimen/dp_20"
                     android:visibility="gone"
+                    android:layout_alignParentRight="true"
                     android:layout_alignParentBottom="true"
                     android:id="@+id/iv_delete"/>
             </RelativeLayout>

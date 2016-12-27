@@ -6,7 +6,7 @@ package com.igniva.videocapture.db;
 
 public class RecorderDatabaseUtility {
     public static String CREATE_TABLE_LOGIN = "CREATE TABLE " + "Table_HISTORY" +"(" + "video_id" +" INTEGER PRIMARY KEY,"+
-            "Name" +" TEXT,"+ "Description" +" TEXT,"  + "Time" +" TEXT," + "Status" +" TEXT,"  +"Video_Path" +" TEXT"+")";
+            "Name" +" TEXT,"+ "Description" +" TEXT," + "Duration" +" TEXT," + "Time" +" TEXT," + "Status" +" TEXT,"  +"Video_Path" +" TEXT"+")";
     public static final String NAME = "";
     public static final String TABLE_HISTORY = "Table_HISTORY";
 
@@ -22,6 +22,7 @@ public class RecorderDatabaseUtility {
     public static String KEY_TIME = "Time";
     public static String KEY_STATUS = "Status";
     public static String KEY_VIDEO_PATH = "Video_Path";
+    public static String KEY_DURATION= "Duration";
 
 
 

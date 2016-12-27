@@ -40,6 +40,7 @@ import com.igniva.videocapture.R;
 import com.igniva.videocapture.db.RecorderDatabase;
 import com.igniva.videocapture.db.RecorderDatabaseUtility;
 import com.igniva.videocapture.model.HistoryData;
+import com.igniva.videocapture.ui.fragment.HistoryFragment;
 import com.igniva.videocapture.utils.Constants;
 
 import java.io.File;
@@ -66,11 +67,14 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
     SharedPreferences sharedPreferences;
     EditText message_editText = null;
     RecorderDatabase mRecorderDataBase;
+    HistoryFragment mHistoryFragment;
 
-    public HistoryListAdapter(Context context, ArrayList<HistoryData> listCategories) throws Exception {
+    public HistoryListAdapter(Context context, ArrayList<HistoryData> listCategories , HistoryFragment historyFragment) throws Exception {
         this.mListCategories = listCategories;
 
         this.mContext = context;
+
+        this.mHistoryFragment = historyFragment;
 
         mRecorderDataBase = new RecorderDatabase(mContext);
 
@@ -81,7 +85,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView mTvCategoryName, mTvCategoryDuration,mTvDesc,mTvDelete,mTvDeleteItem,mTvShare;
+        TextView mTvCategoryName, mTvCategoryDuration,mTvDesc,mTvDelete,mTvDeleteItem,mTvShare,mTvDuration;
         CardView mCvMain;
         ImageView mIvVideoThumbImg, mIvEditName, mIvEditDesc;
 
@@ -99,6 +103,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
             mIvEditName = (ImageView)itemView.findViewById(R.id.iv_edit_name);
             mIvEditDesc = (ImageView)itemView.findViewById(R.id.iv_edit_desc);
             mCvMain = (CardView)itemView.findViewById(R.id.mainView);
+            mTvDuration = (TextView)itemView.findViewById(R.id.iv_duration);
 
 
         }
@@ -129,11 +134,15 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
 
             }
 
+            holder.mTvDuration.setText(mListCategories.get(position).getDuration());
+
             holder.mTvCategoryName.setText(mListCategories.get(position).getVideo_name());
 
             holder.mTvDesc.setText(mListCategories.get(position).getmDesc());
 
             holder.mTvCategoryDuration.setText(mListCategories.get(position).getmTime());
+
+
 
             if(!mListCategories.get(position).getmStatus().equalsIgnoreCase("Available")){
 
@@ -176,7 +185,7 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                 }
             });
 
-            holder.mCvMain.setOnClickListener(new View.OnClickListener() {
+            holder.mIvVideoThumbImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -403,6 +412,12 @@ public class HistoryListAdapter extends RecyclerView.Adapter<HistoryListAdapter.
                        deleteItem(position);
 
                         mListCategories.remove(position);
+
+                        if(mListCategories.size() == 0){
+
+                            mHistoryFragment.showHideView();
+
+                        }
 
                         notifyDataSetChanged();
                     }

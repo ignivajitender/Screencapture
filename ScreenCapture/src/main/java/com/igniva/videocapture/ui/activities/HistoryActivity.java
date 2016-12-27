@@ -25,10 +25,13 @@ public class HistoryActivity extends BaseActivity {
 
         setUpLayouts();
 
-//        setSupportActionBar(mToolbar);
-//        mToolbar.setTitle("History");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                replaceFragment(new HistoryFragment());
 
-        replaceFragment(new HistoryFragment());
+            }
+        }).start();
     }
 
     @Override

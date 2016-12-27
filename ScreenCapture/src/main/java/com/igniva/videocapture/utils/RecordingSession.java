@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.hardware.display.VirtualDisplay;
 import android.media.CamcorderProfile;
 import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.MediaScannerConnection;
 import android.media.ThumbnailUtils;
@@ -69,6 +70,7 @@ public final class RecordingSession {
 
   private static final String DISPLAY_NAME = "telecine";
   private static final String MIME_TYPE = "video/mp4";
+  MediaMetadataRetriever retriever;
 
   public  interface Listener {
     /** Invoked immediately prior to the start of recording. */
@@ -263,17 +265,11 @@ public final class RecordingSession {
   private void stopRecording() {
 
 
-    Random random = new Random();
 
 
 
-   String time  = Utiliy.curentDateTime();
-    ContentValues contentValues = Utiliy.loadContentValues(random.nextInt(),Utiliy.getName(outputFile),"Edit Description",time,outputFile,"Available");
 
-    ArrayList<ContentValues> contentValuesArrayList = new ArrayList<>();
-    contentValuesArrayList.add(contentValues);
 
-    Utiliy.setUpDataBase(context,contentValuesArrayList);
     Timber.d("Stopping screen recording...");
 
     if (!running) {
@@ -384,8 +380,31 @@ public final class RecordingSession {
 
     new AsyncTask<Void, Void, Bitmap>() {
       @Override protected Bitmap doInBackground(@NonNull Void... none) {
-        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         retriever.setDataSource(context, uri);
+
+
+        MediaPlayer mp = MediaPlayer.create(context, Uri.parse(outputFile));
+        int test = mp.getDuration();
+        mp.release();
+        Random random = new Random();
+
+        String time  = Utiliy.curentDateTime();
+
+        //  int test =  Integer.parseInt(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+        String duration= String.format("%d min, %d sec",
+                TimeUnit.MILLISECONDS.toMinutes(test),
+                TimeUnit.MILLISECONDS.toSeconds(test) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(test))
+        );
+
+        ContentValues contentValues = Utiliy.loadContentValues(random.nextInt(),Utiliy.getName(outputFile),"Edit Description",time,outputFile,"Available",duration);
+
+        ArrayList<ContentValues> contentValuesArrayList = new ArrayList<>();
+
+        contentValuesArrayList.add(contentValues);
+
+        Utiliy.setUpDataBase(context,contentValuesArrayList);
         return retriever.getFrameAtTime();
       }
 

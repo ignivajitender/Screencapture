@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.igniva.videocapture.R;
 import com.igniva.videocapture.db.RecorderDatabase;
@@ -26,6 +27,9 @@ import com.igniva.videocapture.ui.adapters.HistoryListAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,7 +41,7 @@ public class HistoryFragment extends Fragment {
     public static ArrayList<HistoryData> historyList;
     RecorderDatabase mRecorderDatabase;
     HistoryListAdapter mHistoryAdapter;
-
+    TextView message;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,18 +64,12 @@ public class HistoryFragment extends Fragment {
         mRecorderDatabase.openDatabase();
 
 
-        ContentValues contentValues = loadContentValues(001,"VID_20161214_120720633.mp4","test","19 dec ,2016","/storage/emulated/0/DCIM/Camera/VID_20161214_120720633.mp4","Available");
+        ContentValues contentValues = loadContentValues(001,"VID_20161214_120720633.mp4","test","19 dec ,2016","/storage/emulated/0/DCIM/Camera/VID_20161214_120720633.mp4","Available","5:00");
 
-        ContentValues contentValues1 = loadContentValues(002,"BUg 1 fixes","test","19 dec ,2016","path","Available");
-
-        ContentValues contentValues3 = loadContentValues(003,"BUg 1 fixes","test","19 dec ,2016","path","Available");
-
-        ContentValues contentValues4 = loadContentValues(004,"BUg 1 fixes","test","19 dec ,2016","path","Available");
 
         List<ContentValues> contentValuesList = new ArrayList<>();
         contentValuesList.add(contentValues);
-        contentValuesList.add(contentValues1);
-        contentValuesList.add(contentValues3); contentValuesList.add(contentValues4);
+
         mRecorderDatabase.insertData(contentValuesList, RecorderDatabaseUtility.TABLE_HISTORY);
 
     }
@@ -81,9 +79,12 @@ public class HistoryFragment extends Fragment {
         historyList = new ArrayList<>();
 
         mRvCategories = (RecyclerView) mView.findViewById(R.id.rv_categories);
+
+        message = (TextView)mView.findViewById(R.id.iv_message);
+
         try {
 
-            mHistoryAdapter = new HistoryListAdapter(getActivity(), historyList);
+            mHistoryAdapter = new HistoryListAdapter(getActivity(), historyList,HistoryFragment.this);
             mRvCategories.setAdapter(mHistoryAdapter);
             mRvCategories.setHasFixedSize(true);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -121,7 +122,7 @@ public class HistoryFragment extends Fragment {
             do {
                 String data =  cursor.getString(0);
 
-                String video_path = cursor.getString(5);
+                String video_path = cursor.getString(6);
 
                 File  file = new File(video_path);
 
@@ -129,19 +130,31 @@ public class HistoryFragment extends Fragment {
 
                     updateRow(cursor);
 
-                    loadDataInView(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),"DELETED",cursor.getString(5));
+                    loadDataInView(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(4),"DELETED",cursor.getString(6),cursor.getString(3));
 
                 }else {
 
-                    loadDataInView(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),"Available",cursor.getString(5));
+                    loadDataInView(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(4),"Available",cursor.getString(6),cursor.getString(3));
 
                 }
 
         }while (cursor.moveToNext());
-    }
+
+       }else {
+
+            message.setVisibility(View.VISIBLE);
+
+        }
+
+      //  Collections.reverse(historyList);
+
+         sort();
+        mHistoryAdapter.notifyDataSetChanged();
+
+        mRecorderDatabase.closeDatabase();
 }
 
-    private void loadDataInView(String id, String name, String desc, String time, String status, String path) {
+    private void loadDataInView(String id, String name, String desc, String time, String status, String path,String duration) {
 
         HistoryData historyData = new HistoryData();
 
@@ -151,10 +164,11 @@ public class HistoryFragment extends Fragment {
         historyData.setmStatus(status);
         historyData.setVideo_path(path);
         historyData.setVideo_id(id);
+        historyData.setDuration(duration);
 
         historyData.setVideo_name(getName(path));
         historyList.add(historyData);
-        mHistoryAdapter.notifyDataSetChanged();
+
     }
 
     private String getName(String path) {
@@ -171,7 +185,8 @@ public class HistoryFragment extends Fragment {
         historyData.setVideo_id(cursor.getString(0));
         historyData.setmName(cursor.getString(1));
         historyData.setmDesc(cursor.getString(2));
-        historyData.setmTime(cursor.getString(4));
+        historyData.setDuration(cursor.getString(3));
+        historyData.setmTime(cursor.getString(5));
 
         historyList.add(historyData);
         mHistoryAdapter.notifyDataSetChanged();
@@ -179,19 +194,20 @@ public class HistoryFragment extends Fragment {
 
     private void updateRow(Cursor cursor) {
 
-        ContentValues contentData = loadContentValues(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(5),"Deleted");
+        ContentValues contentData = loadContentValues(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(4),cursor.getString(6),"Deleted",cursor.getString(3));
 
         mRecorderDatabase.updateData(contentData,RecorderDatabaseUtility.TABLE_HISTORY,"video_id=" +cursor.getString(0),null);
 
     }
 
 
-    private ContentValues loadContentValues(int id, String name, String test, String time, String path, String status) {
+    private ContentValues loadContentValues(int id, String name, String test, String time, String path, String status,String duration) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(RecorderDatabaseUtility.KEY_ID,id);
 
         contentValues.put(RecorderDatabaseUtility.KEY_NAME,name);
         contentValues.put(RecorderDatabaseUtility.KEY_DESC,test);
+        contentValues.put(RecorderDatabaseUtility.KEY_DURATION,duration);
         contentValues.put(RecorderDatabaseUtility.KEY_TIME,time);
         contentValues.put(RecorderDatabaseUtility.KEY_VIDEO_PATH,path);
 
@@ -201,5 +217,18 @@ public class HistoryFragment extends Fragment {
         return contentValues;
     }
 
+    public void sort(){
+        Collections.sort(historyList, new Comparator<HistoryData>(){
+            public int compare(HistoryData date1, HistoryData date2){
+                return new Date(date2.getmTime()).compareTo(new Date(date1.getmTime()));
+            }
+        });
+        //Collections.reverse(historyList);
+    }
+
+
+    public void showHideView(){
+        message.setVisibility(View.VISIBLE);
+    }
 
 }

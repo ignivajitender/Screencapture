@@ -6,10 +6,18 @@ package com.igniva.videocapture.model;
 
 public class HistoryData {
 
-    private String mName,mDesc,mTime,mStatus,video_path,video_name,video_id;
+    private String mName,mDesc,mTime,mStatus,video_path,video_name,video_id,duration;
 
     public String getVideo_name() {
         return video_name;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
     }
 
     public void setVideo_name(String video_name) {
